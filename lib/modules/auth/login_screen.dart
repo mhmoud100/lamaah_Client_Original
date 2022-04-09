@@ -1,5 +1,8 @@
+import 'dart:io' show Platform;
 import 'package:country_pickers/country.dart';
 import 'package:country_pickers/country_pickers.dart';
+import 'package:device_info/device_info.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -9,6 +12,7 @@ import 'package:my_cab/constance/global.dart' as globals;
 import 'package:my_cab/constance/themes.dart';
 import 'package:my_cab/extension/string_extension.dart';
 import 'package:my_cab/modules/auth/phone_verification.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -20,7 +24,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
   // Country _selectedCountry = CountryPickerUtils.getCountryByIsoCode('US');
   bool isSignUp = true;
   String phoneNumber = '';
-  String countryCode = "+91";
+  String countryCode = "+971";
 
   TextEditingController _nameController = TextEditingController();
   TextEditingController _emailController = TextEditingController();
@@ -28,6 +32,34 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
   TextEditingController _passwordconfirmController = TextEditingController();
   TextEditingController _phoneController = TextEditingController();
 
+
+  static Future<void> getDeviceDetails() async {
+    final prefs = await SharedPreferences.getInstance();
+    String deviceName="";
+    String deviceType="";
+    String identifier="";
+    final DeviceInfoPlugin deviceInfoPlugin = new DeviceInfoPlugin();
+    try {
+      if (Platform.isAndroid) {
+        var build = await deviceInfoPlugin.androidInfo;
+        deviceName = build.model;
+        deviceType = build.version.toString();
+        identifier = build.androidId;  //UUID for Android
+        await prefs.setString('deviceType', "android");
+      } else if (Platform.isIOS) {
+        var data = await deviceInfoPlugin.iosInfo;
+        deviceName = data.name;
+        deviceType = data.systemVersion;
+        identifier = data.identifierForVendor;  //UUID for iOS
+        await prefs.setString('deviceType', "ios");
+      }
+    } on PlatformException {
+      print('Failed to get platform version');
+    }
+    await prefs.setString('deviceName', deviceName);
+    await prefs.setString('identifier', identifier);
+    //if (!mounted) return;
+  }
 
   @override
   void initState() {
@@ -584,15 +616,10 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
             onTap: () {
               isSignUp?
                   // Sign Upppppppppp
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => PhoneVerification()),
-              ):
+              signup()
+              :
                   // Sign Innnnnnnnnnnn
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => PhoneVerification()),
-              );
+                  signup();
             },
             child: Center(
               child: Text(
@@ -620,4 +647,27 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
     }
     return newString;
   }
+
+  signup() {
+    FirebaseMessaging.instance.getToken().then((Dtoken) async {
+      final prefs = await SharedPreferences.getInstance();
+
+      await getDeviceDetails();
+
+      String s = _phoneController.text[0] =="0"?"${_phoneController.text.substring(1)}":"${_phoneController.text}";
+      String x = "$countryCode$s";
+      Map<String, dynamic> body = {
+        "device_type": await prefs.getString('deviceType'),
+        "device_id": await prefs.getString("identifier"),
+        "device_token": Dtoken,
+        "login_by": "manual",
+        "first_name": _nameController.text,
+        "email": _emailController.text.trim(),
+        "password": _passwordController.text,
+        "dialCodesDigits":countryCode,
+        "mobile": "${x}"
+      };
+      Navigator.push(context, MaterialPageRoute(builder: (context) => PhoneVerification(body: body,)));
+  });
+}
 }

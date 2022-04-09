@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "222757209844",
+    "firebase_url": "https://laamah-default-rtdb.firebaseio.com",
+    "project_id": "laamah",
+    "storage_bucket": "laamah.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:222757209844:android:ad32f4b3fe9da9dc7300a1",
+        "android_client_info": {
+          "package_name": "com.lamaah.client.n"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "222757209844-3nru49igv3m946rqmmse8d0k1u106rsn.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.lamaah.client.n",
+            "certificate_hash": "370fad40a593c7ea3b4d3ab2f576bb52fb9d9b9b"
+          }
+        },
+        {
+          "client_id": "222757209844-i7fu0otnubqos0hnac679fnvsskso3a0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDFL13OthJOJy09kbY07Yz3B3UYhEYqwbE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "222757209844-i7fu0otnubqos0hnac679fnvsskso3a0.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "222757209844-b6k8h5k063op0dhu1fccninml6si7frf.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.lamaah.driver"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

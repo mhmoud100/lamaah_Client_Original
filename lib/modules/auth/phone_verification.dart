@@ -7,6 +7,8 @@ import 'package:my_cab/constance/themes.dart';
 
 class PhoneVerification extends StatefulWidget {
   @override
+  Map<String, dynamic> body;
+  PhoneVerification({required this.body});
   _PhoneVerificationState createState() => _PhoneVerificationState();
 }
 

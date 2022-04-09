@@ -1,4 +1,5 @@
 import 'dart:io' show Platform;
+import 'package:country_code_picker/country_code_picker.dart';
 import 'package:country_pickers/country.dart';
 import 'package:country_pickers/country_pickers.dart';
 import 'package:device_info/device_info.dart';
@@ -26,7 +27,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
   // Country _selectedCountry = CountryPickerUtils.getCountryByIsoCode('US');
   bool isSignUp = false;
   String phoneNumber = '';
-  String countryCode = "+91";
+  String countryCode = "+971";
 
   TextEditingController _nameController = TextEditingController();
   TextEditingController _emailController = TextEditingController();
@@ -538,68 +539,87 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
           border: Border.all(color: Theme.of(context).dividerColor, width: 0.6),
         ),
         child: Row(
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.only(left: 16),
-              child: Container(
-                width: 80,
-                height: 60,
-                child: Center(
-                  child: CountryPickerDropdown(
-                    onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
-                    onValuePicked: (Country country) {
-                      print("${country.name}");
-                      countryCode = "+${country.phoneCode}";
-                    },
-                    itemBuilder: (Country country) {
-                      return Row(
-                        children: <Widget>[
-                          CountryPickerUtils.getDefaultFlagImage(country),
-                          Expanded(child: Text("  +${country.phoneCode}")),
-                        ],
-                      );
-                    },
-                    itemHeight: null,
-                    isExpanded: true,
-                    icon: SizedBox(),
-                  ),
-                ),
-              ),
-            ),
-            Container(
-              color: Theme.of(context).dividerColor,
-              height: 32,
-              width: 1,
+          children: [
+            CountryCodePicker(
+              onChanged: (country){
+                setState(() {
+                  countryCode = country.dialCode!;
+                });
+              },
+              initialSelection: "AE",
+              showCountryOnly: false,
+              showOnlyCountryWhenClosed: false,
+              favorite: ["+971","+1","US"],
             ),
             Expanded(
-              child: Padding(
-                padding: const EdgeInsets.only(left: 0, right: 16),
-                child: Container(
-                  height: 48,
-                  child: TextField(
-                    maxLines: 1,
-                    controller: _phoneController,
-                    onChanged: (String txt) {
-                      phoneNumber = txt.removeZeroInNumber;
-                    },
-                    style: TextStyle(
-                      fontSize: 16,
-                    ),
-                    cursorColor: Theme.of(context).primaryColor,
-                    decoration: new InputDecoration(
-                      errorText: null,
-                      border: InputBorder.none,
-                      hintText: AppLocalizations.of(" Phone Number"),
-                      hintStyle: TextStyle(color: Theme.of(context).disabledColor),
-                    ),
-                    keyboardType: TextInputType.phone,
-                    inputFormatters: <TextInputFormatter>[],
-                  ),
+              child: TextField(
+                controller: _phoneController,
+                decoration: InputDecoration(
+                  hintText: "Phone Number",
+                  contentPadding: EdgeInsets.symmetric(horizontal: 15,vertical: 15),
+                  border: InputBorder.none,
+
                 ),
+                keyboardType: TextInputType.number,
               ),
             ),
           ],
         ),
+        // Row(
+        //   children: <Widget>[
+        //     Padding(
+        //       padding: const EdgeInsets.only(left: 16),
+        //       child: Container(
+        //         width: 80,
+        //         height: 60,
+        //         child: CountryCodePicker(
+        //             onChanged: (country){
+        //               setState(() {
+        //                 countryCode = country.dialCode!;
+        //               });
+        //             },
+        //             initialSelection: "AE",
+        //             showCountryOnly: false,
+        //             showOnlyCountryWhenClosed: false,
+        //             favorite: ["+971","+1","US"],
+        //           ),
+        //
+        //       ),
+        //     ),
+        //     Container(
+        //       color: Theme.of(context).dividerColor,
+        //       height: 32,
+        //       width: 1,
+        //     ),
+        //     Expanded(
+        //       child: Padding(
+        //         padding: const EdgeInsets.only(left: 0, right: 16),
+        //         child: Container(
+        //           height: 48,
+        //           child: TextField(
+        //             maxLines: 1,
+        //             controller: _phoneController,
+        //             onChanged: (String txt) {
+        //               phoneNumber = txt.removeZeroInNumber;
+        //             },
+        //             style: TextStyle(
+        //               fontSize: 16,
+        //             ),
+        //             cursorColor: Theme.of(context).primaryColor,
+        //             decoration: new InputDecoration(
+        //               errorText: null,
+        //               border: InputBorder.none,
+        //               hintText: AppLocalizations.of(" Phone Number"),
+        //               hintStyle: TextStyle(color: Theme.of(context).disabledColor),
+        //             ),
+        //             keyboardType: TextInputType.phone,
+        //             inputFormatters: <TextInputFormatter>[],
+        //           ),
+        //         ),
+        //       ),
+        //     ),
+        //   ],
+        // ),
       ),
     );
   }

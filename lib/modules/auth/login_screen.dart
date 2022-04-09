@@ -24,7 +24,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
   // Country _selectedCountry = CountryPickerUtils.getCountryByIsoCode('US');
   bool isSignUp = true;
   String phoneNumber = '';
-  String countryCode = "+971";
+  String countryCode = "+91";
 
   TextEditingController _nameController = TextEditingController();
   TextEditingController _emailController = TextEditingController();
@@ -613,13 +613,18 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
           child: InkWell(
             borderRadius: BorderRadius.all(Radius.circular(24.0)),
             highlightColor: Colors.transparent,
-            onTap: () {
-              isSignUp?
+            onTap:isSignUp? () {
                   // Sign Upppppppppp
-              signup()
-              :
-                  // Sign Innnnnnnnnnnn
-                  signup();
+              signup();
+            }:
+            (){
+              //sign IN
+              // Sign Innnnnnnnnnnn
+              signup();
+              // Navigator.push(
+              //   context,
+              //   MaterialPageRoute(builder: (context) => PhoneVerification()),
+              // );
             },
             child: Center(
               child: Text(

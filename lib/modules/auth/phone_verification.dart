@@ -1,9 +1,16 @@
+import 'dart:convert';
+
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:my_cab/Language/appLocalizations.dart';
 import 'package:my_cab/constance/constance.dart';
 import 'package:my_cab/constance/global.dart' as globals;
 import 'package:my_cab/constance/routes.dart';
 import 'package:my_cab/constance/themes.dart';
+import 'package:my_cab/Helper/request_helper.dart';
+import 'package:my_cab/Helper/url_helper.dart'as url_helper;
+import 'package:my_cab/modules/auth/login_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class PhoneVerification extends StatefulWidget {
   @override
@@ -15,7 +22,8 @@ class PhoneVerification extends StatefulWidget {
 class _PhoneVerificationState extends State<PhoneVerification> with SingleTickerProviderStateMixin {
   late AnimationController animationController;
   var otpController = new TextEditingController();
-
+  var verificationId1;
+  static String smsCode = "";
   @override
   void initState() {
     super.initState();
@@ -25,6 +33,9 @@ class _PhoneVerificationState extends State<PhoneVerification> with SingleTicker
 
   @override
   Widget build(BuildContext context) {
+    var body = widget.body;
+    String phone = body['mobile'];
+    sendverifyphone(phone, smsCode);
     globals.locale = Localizations.localeOf(context);
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
@@ -267,6 +278,7 @@ class _PhoneVerificationState extends State<PhoneVerification> with SingleTicker
             borderRadius: BorderRadius.all(Radius.circular(24.0)),
             highlightColor: Colors.transparent,
             onTap: () {
+              verifyPhone(widget.body);
               Navigator.pushNamedAndRemoveUntil(context, Routes.HOME, (Route<dynamic> route) => false);
             },
             child: Center(
@@ -315,5 +327,64 @@ class _PhoneVerificationState extends State<PhoneVerification> with SingleTicker
     return Row(
       children: otplist,
     );
+  }
+
+  sendverifyphone(String phone,String smsCode) async {
+
+    FirebaseAuth auth = FirebaseAuth.instance;
+    await auth.verifyPhoneNumber(
+      phoneNumber: "${phone}",
+      verificationCompleted: (PhoneAuthCredential credential) async {
+        // ANDROID ONLY!
+        print("hi $credential");
+        // Sign the user in (or link) with the auto-generated credential
+        await auth.signInWithCredential(credential);
+      }, verificationFailed: (FirebaseAuthException error) {
+    },
+      codeAutoRetrievalTimeout: (String verificationId){
+      },
+      codeSent: (String verificationId, int? forceResendingToken) async {
+        // Create a PhoneAuthCredential with the code
+        setState(() {
+          verificationId1 = verificationId;
+        });
+
+        // Sign the user in (or link) with the credential
+      },
+    );
+  }
+
+  verifyPhone(Map<String, dynamic> body) async {
+
+    final prefs = await SharedPreferences.getInstance();
+    FirebaseAuth auth = FirebaseAuth.instance;
+    PhoneAuthCredential credential = PhoneAuthProvider.credential(
+        verificationId: verificationId1, smsCode: otpController.text);
+    await auth.signInWithCredential(credential).then((value) async {
+      if(value.user != null){
+        url_helper.Constants url_help = new url_helper.Constants();
+        request_helper request_help = new request_helper();
+        Uri uri = Uri.parse(url_help.register);
+        await request_help.requestPost(uri, body).then((response) async{
+          if (response.statusCode == 200) {
+            print(json.decode(response.body));
+            // if(json.decode(response.body)["error"] == true){
+            //   hideLoading();
+            //   showError("The email has already been taken.");
+            //
+            // }else {
+            //login?
+
+            await prefs.setString("access_token", json.decode(response.body)[0]["access_token"]); //elmo4kela fe el satr daaaaaaaaaaaaa
+            // print(json.decode(response.body)["id"].runtimeType);
+            Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => LoginScreen()),  (route) => false);
+            // }
+          }
+          else {
+            //showError("registration error");
+          }
+        });
+      }
+    });
   }
 }

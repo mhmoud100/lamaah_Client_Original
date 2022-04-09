@@ -33,9 +33,9 @@ class _PhoneVerificationState extends State<PhoneVerification> with SingleTicker
 
   @override
   Widget build(BuildContext context) {
-    var body = widget.body;
-    String phone = body['mobile'];
-    sendverifyphone(phone, smsCode);
+    // var body = widget.body;
+    // String phone = body['mobile'];
+    // sendverifyphone(phone, smsCode);
     globals.locale = Localizations.localeOf(context);
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
@@ -223,7 +223,11 @@ class _PhoneVerificationState extends State<PhoneVerification> with SingleTicker
                           child: TextField(
                             controller: otpController,
                             maxLength: 6,
-                            onChanged: (String txt) {},
+                            onChanged: (String txt) {
+                              setState(() {});
+
+
+                            },
                             onTap: () {},
                             cursorColor: Theme.of(context).primaryColor,
                             decoration: new InputDecoration(
@@ -278,7 +282,7 @@ class _PhoneVerificationState extends State<PhoneVerification> with SingleTicker
             borderRadius: BorderRadius.all(Radius.circular(24.0)),
             highlightColor: Colors.transparent,
             onTap: () {
-              verifyPhone(widget.body);
+              // verifyPhone(widget.body);
               Navigator.pushNamedAndRemoveUntil(context, Routes.HOME, (Route<dynamic> route) => false);
             },
             child: Center(
@@ -296,6 +300,7 @@ class _PhoneVerificationState extends State<PhoneVerification> with SingleTicker
   Widget getOtpTextUI({String otptxt = ""}) {
     // ignore: deprecated_member_use
     List<Widget> otplist = [];
+
     Widget getUI({String otxt = ""}) {
       return Expanded(
         child: Padding(
@@ -354,37 +359,37 @@ class _PhoneVerificationState extends State<PhoneVerification> with SingleTicker
     );
   }
 
-  verifyPhone(Map<String, dynamic> body) async {
-
-    final prefs = await SharedPreferences.getInstance();
-    FirebaseAuth auth = FirebaseAuth.instance;
-    PhoneAuthCredential credential = PhoneAuthProvider.credential(
-        verificationId: verificationId1, smsCode: otpController.text);
-    await auth.signInWithCredential(credential).then((value) async {
-      if(value.user != null){
-        url_helper.Constants url_help = new url_helper.Constants();
-        request_helper request_help = new request_helper();
-        Uri uri = Uri.parse(url_help.register);
-        await request_help.requestPost(uri, body).then((response) async{
-          if (response.statusCode == 200) {
-            print(json.decode(response.body));
-            // if(json.decode(response.body)["error"] == true){
-            //   hideLoading();
-            //   showError("The email has already been taken.");
-            //
-            // }else {
-            //login?
-
-            await prefs.setString("access_token", json.decode(response.body)[0]["access_token"]); //elmo4kela fe el satr daaaaaaaaaaaaa
-            // print(json.decode(response.body)["id"].runtimeType);
-            Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => LoginScreen()),  (route) => false);
-            // }
-          }
-          else {
-            //showError("registration error");
-          }
-        });
-      }
-    });
-  }
+  // verifyPhone(Map<String, dynamic> body) async {
+  //
+  //   final prefs = await SharedPreferences.getInstance();
+  //   FirebaseAuth auth = FirebaseAuth.instance;
+  //   PhoneAuthCredential credential = PhoneAuthProvider.credential(
+  //       verificationId: verificationId1, smsCode: otpController.text);
+  //   await auth.signInWithCredential(credential).then((value) async {
+  //     if(value.user != null){
+  //       url_helper.Constants url_help = new url_helper.Constants();
+  //       request_helper request_help = new request_helper();
+  //       Uri uri = Uri.parse(url_help.register);
+  //       await request_help.requestPost(uri, body).then((response) async{
+  //         if (response.statusCode == 200) {
+  //           print(json.decode(response.body));
+  //           // if(json.decode(response.body)["error"] == true){
+  //           //   hideLoading();
+  //           //   showError("The email has already been taken.");
+  //           //
+  //           // }else {
+  //           //login?
+  //
+  //           await prefs.setString("access_token", json.decode(response.body)[0]["access_token"]); //elmo4kela fe el satr daaaaaaaaaaaaa
+  //           // print(json.decode(response.body)["id"].runtimeType);
+  //           Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => LoginScreen(isSignUp: false,)),  (route) => false);
+  //           // }
+  //         }
+  //         else {
+  //           //showError("registration error");
+  //         }
+  //       });
+  //     }
+  //   });
+  // }
 }

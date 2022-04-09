@@ -132,7 +132,7 @@ class _NiceIntroductionScreenState extends State<NiceIntroductionScreen> with Si
                                 onTap: () {
                                   Navigator.push(
                                     context,
-                                    MaterialPageRoute(builder: (context) => LoginScreen()),
+                                    MaterialPageRoute(builder: (context) => LoginScreen(isSignUp: true,)),
                                   );
                                 },
                                 child: Row(

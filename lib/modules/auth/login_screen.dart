@@ -15,6 +15,8 @@ import 'package:my_cab/modules/auth/phone_verification.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatefulWidget {
+  bool isSignUp;
+  LoginScreen({required this.isSignUp});
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }
@@ -22,7 +24,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStateMixin {
   late AnimationController animationController;
   // Country _selectedCountry = CountryPickerUtils.getCountryByIsoCode('US');
-  bool isSignUp = true;
+  bool isSignUp = false;
   String phoneNumber = '';
   String countryCode = "+91";
 
@@ -66,6 +68,9 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
     super.initState();
     animationController = new AnimationController(vsync: this, duration: Duration(milliseconds: 1000));
     animationController..forward();
+    setState(() {
+      isSignUp = widget.isSignUp;
+    });
   }
   @override
   Widget build(BuildContext context) {
@@ -365,7 +370,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => LoginScreen()),
+                MaterialPageRoute(builder: (context) => LoginScreen(isSignUp: false,)),
               );
             },
             child: Row(
@@ -621,10 +626,10 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
               //sign IN
               // Sign Innnnnnnnnnnn
               signup();
-              // Navigator.push(
-              //   context,
-              //   MaterialPageRoute(builder: (context) => PhoneVerification()),
-              // );
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => PhoneVerification(body: {},)),
+              );
             },
             child: Center(
               child: Text(

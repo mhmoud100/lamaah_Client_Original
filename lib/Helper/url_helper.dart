@@ -25,7 +25,7 @@ class Constants{
   var GET_ADD_BANK_DETAILS =  "https://lamaah.ae/api/provider/addBank?account_name=";
   var WITHDRAW_REQUEST =  "https://lamaah.ae/api/provider/withdrawalRequest?provider_id=";
   var HELP_URL = "https://lamaah.ae/";
-  var login =  "https://lamaah.ae/api/provider/oauth/token";
+  var login =  "https://lamaah.ae/api/user/auth/signin";
   var register =  "https://lamaah.ae/api/user/signup";
   var email_check =  "https://lamaah.ae/api/provider/check-email";
   var USER_PROFILE_API =  "https://lamaah.ae/api/provider/profile";

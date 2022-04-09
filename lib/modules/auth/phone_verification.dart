@@ -22,7 +22,7 @@ class PhoneVerification extends StatefulWidget {
 class _PhoneVerificationState extends State<PhoneVerification> with SingleTickerProviderStateMixin {
   late AnimationController animationController;
   var otpController = new TextEditingController();
-  var verificationId1;
+  String verificationId1 ="";
   static String smsCode = "";
   @override
   void initState() {
@@ -379,14 +379,14 @@ class _PhoneVerificationState extends State<PhoneVerification> with SingleTicker
             //
             // }else {
             //login?
-
-            await prefs.setString("access_token", json.decode(response.body)[0]["access_token"]); //elmo4kela fe el satr daaaaaaaaaaaaa
+            print("--------- ${response.body}");
             // print(json.decode(response.body)["id"].runtimeType);
             Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => LoginScreen(isSignUp: false,)),  (route) => false);
             // }
           }
           else {
             //showError("registration error");
+            print("--------- ${response.statusCode}");
           }
         });
       }

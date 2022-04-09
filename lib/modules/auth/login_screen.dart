@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io' show Platform;
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:country_pickers/country.dart';
@@ -13,7 +14,10 @@ import 'package:my_cab/constance/global.dart' as globals;
 import 'package:my_cab/constance/themes.dart';
 import 'package:my_cab/extension/string_extension.dart';
 import 'package:my_cab/modules/auth/phone_verification.dart';
+import 'package:my_cab/modules/home/home_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:my_cab/Helper/url_helper.dart'as constants;
+import 'package:my_cab/Helper/request_helper.dart'as request_help;
 
 class LoginScreen extends StatefulWidget {
   bool isSignUp;
@@ -645,11 +649,8 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
             (){
               //sign IN
               // Sign Innnnnnnnnnnn
-              signup();
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => PhoneVerification(body: {},)),
-              );
+              signin();
+
             },
             child: Center(
               child: Text(
@@ -700,4 +701,42 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
       Navigator.push(context, MaterialPageRoute(builder: (context) => PhoneVerification(body: body,)));
   });
 }
+
+  signin() {
+    FirebaseMessaging.instance.getToken().then((token) async {
+      await getDeviceDetails();
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setString('device_token', token!);
+      constants.Constants con = new constants.Constants();
+      request_help.request_helper req = new request_help.request_helper();
+      Uri uri = Uri.parse(con.login);
+      Map<String, dynamic> body = {
+        "email": _emailController.text.toString().trim(),
+        "password": _passwordController.text,
+        "device_type": await prefs.getString("deviceType"),
+        "device_id": await prefs.getString("identifier"),
+        "device_token": await prefs.getString("device_token")
+      };
+      req.requestPost(uri, body).then((response) async {
+        if (response.statusCode == 200) {
+          print("---------------------------------------${response.body}");
+          print(response.body);
+          await prefs.setString("access_token",
+              "${json.decode(response.body)["data"]["access_token"]}").then((
+              value) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => HomeScreen()),
+            );
+          });
+        } else if (response.statusCode == 401) {
+          //show error email or pasword in correct
+          print(response.statusCode);
+        } else {
+          //show error : else if internet connection lost or something error
+        }
+      });
+    });
+
+  }
 }

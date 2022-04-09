@@ -582,6 +582,13 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
             borderRadius: BorderRadius.all(Radius.circular(24.0)),
             highlightColor: Colors.transparent,
             onTap: () {
+              isSignUp?
+                  // Sign Upppppppppp
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => PhoneVerification()),
+              ):
+                  // Sign Innnnnnnnnnnn
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => PhoneVerification()),

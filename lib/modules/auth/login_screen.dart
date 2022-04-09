@@ -22,6 +22,11 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
   String phoneNumber = '';
   String countryCode = "+91";
 
+  TextEditingController _nameController = TextEditingController();
+  TextEditingController _emailController = TextEditingController();
+  TextEditingController _passwordController = TextEditingController();
+  TextEditingController _passwordconfirmController = TextEditingController();
+  TextEditingController _phoneController = TextEditingController();
 
 
   @override
@@ -370,6 +375,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
             child: Center(
               child: TextField(
                 maxLines: 1,
+                controller: _emailController,
                 onChanged: (String txt) {},
                 cursorColor: Theme.of(context).primaryColor,
                 decoration: new InputDecoration(
@@ -402,6 +408,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
             child: Center(
               child: TextField(
                 maxLines: 1,
+                controller: _nameController,
                 onChanged: (String txt) {},
                 cursorColor: Theme.of(context).primaryColor,
                 decoration: new InputDecoration(
@@ -434,6 +441,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
             child: Center(
               child: TextField(
                 maxLines: 1,
+                controller: _passwordController,
                 onChanged: (String txt) {},
                 cursorColor: Theme.of(context).primaryColor,
                 decoration: new InputDecoration(
@@ -466,6 +474,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
             child: Center(
               child: TextField(
                 maxLines: 1,
+                controller: _passwordconfirmController,
                 onChanged: (String txt) {},
                 cursorColor: Theme.of(context).primaryColor,
                 decoration: new InputDecoration(
@@ -477,21 +486,6 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
               ),
             ),
           ),
-        ),
-      ),
-    );
-  }
-
-  Widget _loginTextUI() {
-    return Padding(
-      padding: const EdgeInsets.only(left: 24, right: 16, top: 30, bottom: 30),
-      child: Container(
-        alignment: Alignment.centerLeft,
-        child: Text(
-          AppLocalizations.of('Login with your phone number'),
-          style: Theme.of(context).textTheme.bodyText2!.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
         ),
       ),
     );
@@ -518,6 +512,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                     onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
                     onValuePicked: (Country country) {
                       print("${country.name}");
+                      countryCode = "+${country.phoneCode}";
                     },
                     itemBuilder: (Country country) {
                       return Row(
@@ -546,6 +541,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                   height: 48,
                   child: TextField(
                     maxLines: 1,
+                    controller: _phoneController,
                     onChanged: (String txt) {
                       phoneNumber = txt.removeZeroInNumber;
                     },
